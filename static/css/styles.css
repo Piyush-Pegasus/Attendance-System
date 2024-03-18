@@ -1,0 +1,179 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.468);
+}
+.main{
+    margin:200px 200px;
+
+}
+.task{
+    display: inline-block;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+.task:hover {
+    background-color: #218838;
+}
+
+.task {
+    display: block;
+    width: fit-content;
+    margin: 20px auto;
+}
+h1,h2,h3 {
+    text-align: center;
+    color: #333;
+}
+
+.view-data {
+    margin-top: 20px;
+}
+
+
+/* Form Page (index.html) Styles */
+form {
+    margin-top: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+input[type="file"] {
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    padding: 7px;
+    border-radius: 5px;
+}
+
+input[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+#linkers{
+    display: flex;
+    justify-content: center;
+}
+.view-button {
+    display: inline-block;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: solid;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.view-button:hover {
+    background-color: #218838;
+}
+
+/* Stored Data Page (stored_data.html) Styles */
+.view-button {
+    display: block;
+    width: fit-content;
+    margin: 20px 5px;
+}
+
+.view-button.back {
+    background-color: #dc3545;
+}
+
+.view-button.back:hover {
+    background-color: #c82333;
+}
+
+.view-data {
+    margin-top: 20px;
+} 
+#add_new_person{
+    display: flex;
+    justify-content: center;
+    margin-left: 41%;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+img {
+    max-width: 100px;
+    max-height: 100px;
+    display: block;
+    margin: auto;
+}
+
+.matched-person-info {
+    text-align: center;
+}
+
+.matched-person-info p {
+    margin-bottom: 10px;
+}
+
+.live{
+    display: flexbox;
+    width:640px;
+    height:480px;
+    margin: auto 10px;
+    border-radius: 5px;
+}
+#videoElement{
+    margin-left: 22%;
+    width: 55%;
+    height: 55%;
+    border-radius: 5px;
+    border: #333;
+}

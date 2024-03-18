@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Person Information</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Person Information</h1>
+    <form action="/submit" method="post" enctype="multipart/form-data">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required>
+        <label for="mobile">Mobile Number:</label>
+        <input type="tel" id="mobile" name="mobile" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <label for="image">Image:</label>
+        <input type="file" id="image" name="image" accept="image/*" required>
+        <input type="submit" value="Submit" >
+    </form>
+
+    <div class="view-data">
+        <h2>Stored Data</h2>
+        
+        <div id="linkers">
+            <a href="{{ url_for('stored_data') }}" class="view-button">View Stored Data</a>
+            <a href="{{ url_for('index') }}" class="view-button">Home Page</a>
+        </div>
+        
+    </div>
+</div>
+
+</body>
+</html>

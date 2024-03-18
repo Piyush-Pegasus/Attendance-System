@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Live Stream</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h3>Find existing Person</h3>
+
+        <div id="linkers">
+            <a id="start" class="view-button">Start</a>
+            <button id="stop" class="view-button">Stop</button>
+            <a href="{{ url_for('index') }}" class="view-button">Home Page</a>
+        </div>
+
+    </div>
+    <div id="divi" class="container" style="display: none;">
+        <h3>Live Video Feed</h3>
+        <video id="videoElement" autoplay></video>
+        <div id="match_details" class="container" style="display: none;">
+            <h2>Matched Person Details</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Mobile Number</th>
+                        <th>Email</th>
+                        <th>Image</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="person_name"></td>
+                        <td id="person_address"></td>
+                        <td id="person_mobile"></td>
+                        <td id="person_email"></td>
+                        <td><img src="" id="person_image" alt="Person Image"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="no_match" class="container" style="display: none;">
+            <h2>No match found</h2>
+            <button id="add_new_person" class="view-button">Add New Person</button>
+        </div>
+    </div>
+
+
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        var start = document.getElementById('start');
+        var stop = document.getElementById('stop');
+        var divi = document.getElementById('divi');
+        var matchDetailsDiv = document.getElementById('match_details');
+        var personName = document.getElementById('person_name');
+        var personAddress = document.getElementById('person_address');
+        var personMobile = document.getElementById('person_mobile');
+        var personEmail = document.getElementById('person_email');
+        var image = document.getElementById('person_image');
+        var noMatchDiv = document.getElementById('no_match');
+        var addNewPersonBtn = document.getElementById('add_new_person');
+        const videoElement = document.getElementById('videoElement');
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        let stream
+        let capturing = false;
+        // Function to start streaming when the button is clicked
+        start.addEventListener('click', async () => {
+            try {
+                // Get media stream from the user's camera
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+                // Assign the stream to the video element
+                videoElement.srcObject = stream;
+                noMatchDiv.style.display = 'none';
+                matchDetailsDiv.style.display = 'none';
+                divi.style.display = 'block';
+                videoElement.style.display = 'block';
+                capturing = true;
+
+                videoElement.addEventListener('play', () => {
+                    // Start capturing frames
+                    setTimeout(() => {
+                        // Start capturing frames
+                        const captureInterval = setInterval(() => {
+                            // Check if capturing should continue
+                            if (capturing) {
+                                captureAndSendFrame();
+                            } else {
+                                // If not, clear the interval to stop capturing frames
+                                clearInterval(captureInterval);
+                            }
+                        }, 1000 / 60); // Adjust frame rate as needed
+                    }, 3000);
+                });;
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+            }
+        });
+
+        stop.addEventListener('click', function () {
+            videoElement.pause();
+
+            // Stop all tracks in the stream
+            stream.getTracks().forEach(track => {
+                track.stop();
+            });
+
+            // Reset the video element source
+            videoElement.srcObject = null;
+            divi.style.display = 'none';
+            noMatchDiv.style.display = 'none';
+            matchDetailsDiv.style.display = 'none';
+        });
+        socket.on('match_found', function (personDetails) {
+            noMatchDiv.style.display = 'none';
+            matchDetailsDiv.style.display = 'block';
+            personName.textContent = personDetails.name;
+            personAddress.textContent = personDetails.address;
+            personMobile.textContent = personDetails.mobile;
+            personEmail.textContent = personDetails.email;
+            image.src = "{{ url_for('static', filename='images/') }}" + personDetails.image;
+        });
+        socket.on('no_match', function () {
+            capturing = false;
+            stopStreamingAndRecognition();
+            videoElement.style.display = 'none';
+            matchDetailsDiv.style.display = 'none';
+            noMatchDiv.style.display = 'block';
+            addNewPersonBtn.addEventListener('click', function () {
+                window.location.href = "{{ url_for('index1') }}";
+            });
+
+        });
+
+
+        // Function to capture video frames and send them to the server
+        function captureAndSendFrame() {
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg');
+            if (imageData.startsWith('data:image/jpeg;base64,')) {
+                // Extract base64 data part
+                const base64Data = imageData.split(',')[1];
+
+                // Emit the base64 data to the server
+                socket.emit('frame', { data: base64Data });
+            } else {
+                console.error('Error: Unexpected image data format');
+            }
+        }
+
+        // Start capturing and sending frames when the video starts playing
+
+
+        function stopStreamingAndRecognition() {
+            capturing = false;
+            matchDetailsDiv.style.display = 'none';
+            videoElement.pause();
+
+            // Stop all tracks in the stream
+            stream.getTracks().forEach(track => {
+                track.stop();
+            });
+
+            // Reset the video element source
+            videoElement.srcObject = null;
+
+        }
+    </script>
+</body>
+
+</html>
