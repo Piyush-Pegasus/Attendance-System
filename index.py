@@ -1,1 +1,1 @@
-from wsgi import socketio
+from wsgi import socketio,app
