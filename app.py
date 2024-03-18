@@ -7,10 +7,11 @@ import numpy as np
 import base64
 from PIL import Image
 from io import BytesIO
-import time
+import os
 
 app = Flask(__name__, static_url_path='/static')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///person.db'
+app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
 socketio = SocketIO(app)
 
@@ -25,6 +26,9 @@ class Person(db.Model):
 
 @app.route('/')
 def index():
+    with app.app_context():  # Ensure operations are within application context
+        db.create_all()
+        print("Database tables created successfully")
     return render_template('index.html')
 
 @app.route('/index1')
@@ -119,9 +123,6 @@ def handle_frame(data):
 
 
 if __name__ == '__main__':
-    with app.app_context():  # Ensure operations are within application context
-        db.create_all()
-        print("Database tables created successfully")
     socketio.run(app)
 
 
